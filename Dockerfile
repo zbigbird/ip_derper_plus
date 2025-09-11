@@ -22,6 +22,7 @@ ENV DERP_HTTP_PORT 80
 ENV DERP_HOST=127.0.0.1
 ENV DERP_CERTS=/app/certs/
 ENV DERP_STUN true
+ENV DERP_STUN_PORT=3478
 # 不修改，兼容旧版
 ENV DERP_VERIFY_CLIENTS false
 # 适配自带防盗
@@ -48,3 +49,4 @@ CMD bash /app/build_cert.sh $DERP_HOST $DERP_CERTS /app/san.conf && \
     --a=$DERP_ADDR \
     --http-port=$DERP_HTTP_PORT \
     --verify-clients=$DERP_VERIFY_CLIENTS
+    --stun-port=$DERP_STUN_PORT
