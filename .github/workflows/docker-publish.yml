@@ -103,3 +103,67 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+      
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      
+      - name: Pull and test Docker image
+        run: |
+          # Pull the image
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          
+          # Run container in background with basic configuration
+          docker run -d \
+            --name derper-test \
+            -e DERP_HOST=127.0.0.1 \
+            -e DERP_ADDR=:8443 \
+            -e DERP_HTTP_PORT=8080 \
+            -p 8443:8443 \
+            -p 8080:8080 \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            sh -c "echo '127.0.0.1' > /tmp/hostname && mkdir -p /app/certs && touch /app/certs/cert.pem /app/certs/key.pem && /app/derper --hostname=test.example.com --certmode=manual --certdir=/app/certs --a=:8443 --http-port=8080"
+          
+          # Wait for container to start
+          sleep 10
+          
+          # Check if container is running
+          if [ $(docker ps -q -f name=derper-test | wc -l) -eq 1 ]; then
+            echo "Container started successfully"
+          else
+            echo "Container failed to start"
+            docker logs derper-test || true
+            exit 1
+          fi
+          
+          # Test HTTP endpoint
+          if curl -f http://localhost:8080; then
+            echo "HTTP endpoint accessible"
+          else
+            echo "Failed to access HTTP endpoint"
+            docker logs derper-test
+            exit 1
+          fi
+          
+      - name: Cleanup test container
+        if: always()
+        run: |
+          docker stop derper-test || true
+          docker rm derper-test || true
