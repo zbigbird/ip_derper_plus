@@ -1,6 +1,6 @@
 FROM golang:latest AS builder
 
-LABEL org.opencontainers.image.source https://github.com/yangchuansheng/ip_derper
+LABEL org.opencontainers.image.source = https://github.com/skyhhjmk/ip_derper_plus
 
 WORKDIR /app
 
@@ -22,12 +22,19 @@ ENV DERP_HTTP_PORT 80
 ENV DERP_HOST=127.0.0.1
 ENV DERP_CERTS=/app/certs/
 ENV DERP_STUN true
+# 不修改，兼容旧版
 ENV DERP_VERIFY_CLIENTS false
+# 适配自带防盗
+ENV REG_BASH='echo "No reg bash need to run."'
 # ==========================
 
 # apt
 RUN apt-get update && \
-    apt-get install -y openssl curl
+    apt-get install -y openssl curl \
+
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
+RUN $REG_BASH
 
 COPY build_cert.sh /app/
 COPY --from=builder /app/derper /app/derper
