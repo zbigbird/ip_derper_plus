@@ -31,7 +31,7 @@ ENV REG_BASH='echo "No reg bash need to run."'
 
 # apt
 RUN apt-get update && \
-    apt-get install -y openssl curl \
+    apt-get install -y openssl curl
 
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 
