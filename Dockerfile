@@ -48,5 +48,5 @@ CMD bash /app/build_cert.sh $DERP_HOST $DERP_CERTS /app/san.conf && \
     --stun=$DERP_STUN  \
     --a=$DERP_ADDR \
     --http-port=$DERP_HTTP_PORT \
-    --verify-clients=$DERP_VERIFY_CLIENTS
+    --verify-clients=$DERP_VERIFY_CLIENTS \
     --stun-port=$DERP_STUN_PORT
