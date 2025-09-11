@@ -14,6 +14,7 @@ on:
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -21,10 +22,8 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
 
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,6 +35,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -60,6 +61,12 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Modify code to disable server name checking
+      - name: Modify derper code
+        run: |
+          cd tailscale
+          sed -i '/hi.ServerName != m.hostname/,+2d' cmd/derper/cert.go
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
