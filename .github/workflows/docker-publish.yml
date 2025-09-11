@@ -133,13 +133,13 @@ jobs:
           # Run container in background with basic configuration
           docker run -d \
             --name derper-test \
-            -e DERP_HOST=127.0.0.1 \
+            -e DERP_HOST=test.example.com \
             -e DERP_ADDR=:8443 \
             -e DERP_HTTP_PORT=8080 \
             -p 8443:8443 \
             -p 8080:8080 \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            sh -c "echo '127.0.0.1' > /tmp/hostname && mkdir -p /app/certs && touch /app/certs/cert.pem /app/certs/key.pem && /app/derper --hostname=test.example.com --certmode=manual --certdir=/app/certs --a=:8443 --http-port=8080"
+            sh -c "echo 'test.example.com' > /tmp/hostname && mkdir -p /app/certs && touch /app/certs/cert.pem /app/certs/key.pem && /app/derper --hostname=test.example.com --certmode=manual --certdir=/app/certs --a=:8443 --http-port=8080"
           
           # Wait for container to start
           sleep 10
