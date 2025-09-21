@@ -1,4 +1,4 @@
-本项目从 [ip_derper](https://github.com/yangchuansheng/ip_derper) 分支而来并独立维护
+本项目从 [ip_derper](https://github.com/yangchuansheng/ip_derper) 分支而来并独立维护。
 
 # IP DERPer Plus
 
@@ -6,11 +6,11 @@
 
 推荐先使用雨云免费一键部署
 
-[![通过雨云一键部署](https://rainyun-apps.cn-nb1.rains3.com/materials/deploy-on-rainyun-cn.svg)](https://app.rainyun.com/apps/rca/store/7021/wp-admin_?s=github_app7021)
+[![通过雨云一键部署](https://rainyun-apps.cn-nb1.rains3.com/materials/deploy-on-rainyun-cn.svg)](https://app.rainyun.com/apps/rca/store/7021/github_?s=github_app7021)
 
-> Ads: 雨云优惠码 `wp-admin` 可享新用户 5 折优惠和永久折扣以及消费积分返利
+> Ads: 雨云优惠码 `github` 可享新用户 5 折优惠和永久折扣以及消费积分返利
 
-您需要在 Tailscale 控制台生成一个脚本，并且将 `&&` 后的内容复制下来，传入环境变量 `REG_BASH` 中即可
+您需要在 Tailscale 控制台生成一个脚本，并且将 `&&` 后的内容复制下来，传入环境变量 `REG_BASH` 中即可。
 
 ![img.png](img/img.png)
 
@@ -26,3 +26,6 @@
 | REG_BASH            | `echo "No reg bash need to run."` |
 
 
+## NOTE
+
+相较于原分支，修改了 Dockerfile 的命令，在构建时自动安装最新版 Tailscale 客户端，并且提供一个环境变量用于填入快捷注册命令。
