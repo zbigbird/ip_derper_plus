@@ -15,7 +15,7 @@ services:
       # 默认HTTP访问地址
       - DERP_HTTP_PORT=80
       # DREP服务器的互联网地址
-      - DERP_HOST=103.109.20.169
+      - DERP_HOST=X.X.X.X
       # DREP服务器CERTS存储路径
       # 部署后可以用ls -lah /var/lib/derper/和ls -lah /app/certs/查看相应目录下是否存在与互联网IP地址一致的.crt文件
       - DERP_CERTS=/app/certs/
@@ -26,7 +26,7 @@ services:
       # DREP服务器是否确认客户端，默认是不确认，所有客户端均可连接
       - DERP_VERIFY_CLIENTS=false
       # 在tailscale的console上添加的linux sever脚本
-      - REG_BASH=sudo tailscale up --auth-key=tskey-auth-kUfqx9redY11CNTRL-
+      - REG_BASH=sudo tailscale up --auth-key=tskey-auth-XXXXXXXXXXXXXX
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
