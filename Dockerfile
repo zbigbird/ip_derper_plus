@@ -25,7 +25,7 @@ WORKDIR /app
 ENV DERP_ADDR=:443
 ENV DERP_HTTP_PORT=80
 ENV DERP_HOST=127.0.0.1
-ENV DERP_CERTS=/var/lib/derper
+ENV DERP_CERTS=/app/certs
 ENV DERP_STUN=true
 ENV DERP_STUN_PORT=3478
 # 不修改，兼容旧版
@@ -40,8 +40,6 @@ RUN apt-get update && \
 
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 
-RUN $REG_BASH
-
 # 复制构建好的二进制文件和证书生成脚本
 COPY --from=builder /app/derper /app/derper
 COPY build_cert.sh /app/
@@ -52,6 +50,7 @@ HEALTHCHECK --interval=30s --timeout=3s \
 
 # build self-signed certs && start derper
 CMD bash /app/build_cert.sh $DERP_HOST $DERP_CERTS /app/san.conf && \
+    $REG_BASH && \
     /app/derper --hostname=$DERP_HOST \
     --certmode=manual \
     --certdir=$DERP_CERTS \
